@@ -1,0 +1,332 @@
+﻿<Window x:Class="PasswordGenerator.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:PasswordGenerator"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    mc:Ignorable="d"
+    Title="Password Manager" Height="843" Width="452" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Icon="/icon.png" WindowStyle="SingleBorderWindow">
+
+    <Grid Margin="0,0,0,-6" Background="#191919">
+        <materialDesign:DialogHost
+            DialogClosing="EditConfirmClick"
+            DialogTheme="Inherit">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Margin="16">
+                    
+                    <TextBlock Text="Введите новые данные."/>
+
+                    <TextBox
+                        Margin="0 8 0 0"
+                        HorizontalAlignment="Stretch"
+                        x:Name="editServiceTextBox"/>
+
+                    <TextBox
+                        Margin="0 8 0 0"
+                        HorizontalAlignment="Stretch"
+                        x:Name="editLoginTextBox"/>
+
+                    <TextBox
+                        Margin="0 8 0 0"
+                        HorizontalAlignment="Stretch"
+                        x:Name="editPasswordTextBox"
+                        TextChanged="EditCheckStrength"
+                    />
+
+                    <Label
+                        x:Name="editPasswordStrench"
+                        HorizontalAlignment="Center"
+                        Content="Уровень пароля"
+                    />
+
+                    <Label
+                        x:Name="editSliderValue"
+                        HorizontalAlignment="Center"
+                        Content="8"
+                    />
+
+                    <Slider
+                        x:Name="editSlider"
+                        Width="250"
+                        Value="8"
+                        Minimum="8" 
+                        Maximum="32" 
+                        TickFrequency="1" 
+                        TickPlacement="BottomRight" 
+                        IsSnapToTickEnabled="True"
+                        ValueChanged="EditSliderValueChanged"
+                    />
+
+                    <CheckBox
+                        x:Name="editUppercaseCheckBox"
+                        Content="Верхний регистр"
+                        IsChecked="True"
+                        HorizontalAlignment="Center"
+                    />
+                    
+                    <CheckBox
+                        x:Name="editDigitsCheckBox"
+                        Content="Цифры"
+                        IsChecked="True"
+                        HorizontalAlignment="Center"
+                    />
+                    
+                    <CheckBox
+                        x:Name="editSpecialCharactersCheckBox"
+                        Content="Спец. символы"
+                        IsChecked="True"
+                        HorizontalAlignment="Center"
+                    />
+
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                        
+                        <Button
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsCancel="True"
+                            Margin="0 8 8 0"
+                            Content="Отменить"
+                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsCancel="True"
+                            Margin="0 8 8 0"
+                            Content="Сгенерировать"
+                            Click="EditGenerateClick">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsDefault="True"
+                            Margin="0 8 8 0"
+                            Content="Изменить"
+                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+
+            <Border
+                BorderThickness="1"
+                BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                MinHeight="256"
+                ClipToBounds="True">
+                
+                <Grid HorizontalAlignment="Center" Width="451">
+
+                    <Button 
+                        Content="{materialDesign:PackIcon Kind=FindInPage, Size=22}"
+                        Click="ShowSearch"
+                        VerticalAlignment="Top"
+                        Visibility="Visible"
+                        Margin="391,0,0,0"
+                        Cursor="Hand" HorizontalAlignment="Left" Width="54"
+                    />
+
+                    <TextBox 
+                        x:Name="search_TextBox"
+                        TextChanged="SearchFilter"
+                        HorizontalAlignment="Left"
+                        Margin="264,4,0,0"
+                        Visibility="Hidden"
+                        TextWrapping="Wrap"
+                        VerticalAlignment="Top"
+                        Width="120"
+                        Background="White"
+                        Cursor="Arrow"
+                    />
+
+                    <ListView x:Name="InformationList" d:ItemsSource="{d:SampleData ItemCount=2}" Background="#191919" Foreground="White" Margin="10,37,-49,70">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.ColumnHeaderContainerStyle>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </Style>
+                                </GridView.ColumnHeaderContainerStyle>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=Service}" Width="150"/>
+                                <GridViewColumn Width="65">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button
+                                                Click="CopyLogin_Click"
+                                                Content="{materialDesign:PackIcon Kind=Account, Size=24}" Cursor="Hand"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="65">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button
+                                                Click="CopyPasswordClick"
+                                                Content="{materialDesign:PackIcon Kind=Password, Size=24}" Cursor="Hand"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="65">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button 
+                                                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                                Click="EditClick"
+                                                Content="{materialDesign:PackIcon Kind=Edit, Size=24}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="65">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button 
+                                                Click="DeleteClick"
+                                                Content="{materialDesign:PackIcon Kind=Delete, Size=22}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </Border>
+        </materialDesign:DialogHost>
+
+        <materialDesign:DialogHost
+                    DialogClosing="CreateClick"
+                    DialogTheme="Inherit">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Margin="16">
+                    <TextBlock Text="Введите данные:" HorizontalAlignment="Center"/>
+
+                    <TextBox
+                        Margin="0 8 0 0"
+                        HorizontalAlignment="Center"
+                        Width="250"
+                        x:Name="NewServiceTextBox"
+                    />
+
+                    <TextBox
+                        Margin="0 8 0 0"
+                        HorizontalAlignment="Center"
+                        Width="250"
+                        x:Name="NewLoginTextBox"
+                    />
+
+                    <TextBox
+                        Margin="0 8 0 0"
+                        HorizontalAlignment="Center"
+                        Width="250"
+                        x:Name="NewPasswordTextBox"
+                        TextChanged="CreateCheckStrength"
+                    />
+
+                    <Label
+                        x:Name="CreatePasswordStrench"
+                        HorizontalAlignment="Center"
+                        Content="Уровень пароля"
+                    />
+
+                    <Label
+                        x:Name="CreateSliderValue"
+                        HorizontalAlignment="Center"
+                        Content="8"
+                    />
+
+                    <Slider
+                        x:Name="CreateSlider"
+                        Width="250"
+                        Value="8"
+                        Minimum="8" 
+                        Maximum="32" 
+                        TickFrequency="1" 
+                        TickPlacement="BottomRight" 
+                        IsSnapToTickEnabled="True"
+                        ValueChanged="CreateSliderValueChanged"
+                    />
+
+                    <CheckBox
+                        x:Name="Create_Uppercase_CheckBox"
+                        Content="Верхний регистр"
+                        IsChecked="True"
+                        HorizontalAlignment="Center"
+                    />
+
+                    <CheckBox
+                        x:Name="Create_Digits_CheckBox"
+                        Content="Цифры"
+                        IsChecked="True"
+                        HorizontalAlignment="Center"
+                    />
+
+                    <CheckBox
+                        x:Name="Create_SpecialCharacters_CheckBox"
+                        Content="Спец. символы"
+                        IsChecked="True"
+                        HorizontalAlignment="Center"
+                    />
+
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+
+                        <Button
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsCancel="True"
+                            Margin="0 8 8 0"
+                            Content="Отменить"
+                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsCancel="True"
+                            Margin="0 8 8 0"
+                            Content="Сгенерировать"
+                            Click="CreateGenerateClick">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsDefault="True"
+                            Margin="0 8 8 0"
+                            Content="Создать"
+                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                        </Button>
+
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+
+            <Button 
+                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                Click="ClearCreateClick"
+                Content="{materialDesign:PackIcon Kind=Plus}"
+                Margin="378,750,10,0"
+            />
+
+        </materialDesign:DialogHost>
+    </Grid>
+</Window>
